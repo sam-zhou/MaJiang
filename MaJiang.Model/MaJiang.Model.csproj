@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B744477-5519-4ECC-8188-55366C724E08}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MaJiang.Model</RootNamespace>
+    <AssemblyName>MaJiang.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EventArgs\PlayerActionableEventArgs.cs" />
+    <Compile Include="EventArgs\TileRemovedEventArgs.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Interfaces\ICountableStackCollection.cs" />
+    <Compile Include="Interfaces\ICountableTileCollection.cs" />
+    <Compile Include="Interfaces\IPlayerAction.cs" />
+    <Compile Include="Interfaces\ISelectableCollection.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="PlayerAction.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Stack.cs" />
+    <Compile Include="StacksCollection.cs" />
+    <Compile Include="Tile.cs" />
+    <Compile Include="TilesCollection.cs" />
+    <Compile Include="TileGroup.cs" />
+    <Compile Include="MeldType.cs" />
+    <Compile Include="Meld.cs" />
+    <Compile Include="TilesOnHand.cs" />
+    <Compile Include="Suit.cs" />
+    <Compile Include="Board.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rank.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaJiang.Extention\MaJiang.Extention.csproj">
+      <Project>{4e3ba6a5-febf-4c1c-b537-0ec2ac9f31e4}</Project>
+      <Name>MaJiang.Extention</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
