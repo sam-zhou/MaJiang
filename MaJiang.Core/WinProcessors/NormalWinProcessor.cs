@@ -31,7 +31,7 @@ namespace MaJiang.Core.WinProcessors
                     if (floor == 2 || floor == 0)
                     {
                         var items =
-                                GetMeldCollections(new MeldCollection(null, ordered.Where(q => q.Suit.Equals(suit)).ToList(), possibleSet.Draw));
+                                GetMeldCollections(new MeldCollection(null, ordered.Where(q => q.Suit.Equals(suit)).ToList(), possibleSet.Draw)).Where(q => q.Successful);
 
                         foreach (var meldCollection in items)
                         {

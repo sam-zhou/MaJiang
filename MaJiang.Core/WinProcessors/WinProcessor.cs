@@ -112,7 +112,7 @@ namespace MaJiang.Core.WinProcessors
             return output;
         }
 
-        private IEnumerable<MeldCollection> GetTripletMeldCollections(MeldCollection meldCollection)
+        private IEnumerable<MeldCollection> GetTripletMeldCollections(MeldCollection meldCollection, IEnumerable<Tile> exceptions = null)
         {
             var output = new List<MeldCollection>
             {
@@ -120,7 +120,13 @@ namespace MaJiang.Core.WinProcessors
             };
 
 
-            var tilesWithTripletOccurance = meldCollection.TilesLeft.Where(q => meldCollection.TilesLeft.Count(p => p.Rank.Equals(q.Rank) && p.Suit.Equals(q.Suit)) >= 3);
+            var tilesWithTripletOccurance = meldCollection.TilesLeft.Where(q => meldCollection.TilesLeft.Count(p => p.GetHashCode() == q.GetHashCode()) >= 3).Distinct();
+
+            if (exceptions != null)
+            {
+                tilesWithTripletOccurance =
+                    tilesWithTripletOccurance.Where(q => exceptions.Any(p => p.GetHashCode() != q.GetHashCode()));
+            }
 
             foreach (var tile in tilesWithTripletOccurance)
             {
