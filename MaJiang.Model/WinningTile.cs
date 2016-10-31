@@ -9,12 +9,14 @@ namespace MaJiang.Model
 {
     public class WinningTile
     {
-        private readonly Tile _tile;
+        private readonly MeldCollection _meldCollection;
         private readonly WinType _type;
 
-        public Tile Tile
+        public int Power { get; set; }
+
+        public MeldCollection MeldCollection
         {
-            get { return _tile; }
+            get { return _meldCollection; }
         }
 
         public WinType Type
@@ -22,15 +24,16 @@ namespace MaJiang.Model
             get { return _type; }
         }
 
-        public WinningTile(Tile tile, WinType type)
+        public WinningTile(MeldCollection meldCollection, WinType type, int power = 1)
         {
-            _tile = tile;
+            _meldCollection = meldCollection;
             _type = type;
+            Power = power;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} win by {1}", Type, Tile);
+            return string.Format("{0} win by {1}", Type, MeldCollection.Draw);
         }
     }
 }

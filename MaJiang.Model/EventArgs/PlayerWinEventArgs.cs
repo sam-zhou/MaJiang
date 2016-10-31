@@ -9,7 +9,6 @@ namespace MaJiang.Model.EventArgs
     public class PlayerWinEventArgs : System.EventArgs
     {
         private IEnumerable<WinningTile> _winningTiles;
-        private IEnumerable<MeldCollection> _winningCollections; 
 
         public long DiscardByUserId { get; set; }
 
@@ -25,18 +24,5 @@ namespace MaJiang.Model.EventArgs
             }
             set { _winningTiles = value; }
         }
-
-        public IEnumerable<MeldCollection> WinningCollections
-        {
-            get
-            {
-                if (_winningCollections == null)
-                {
-                    _winningCollections = new List<MeldCollection>();
-                }
-                return _winningCollections;
-            }
-            set { _winningCollections = value; }
-        } 
     }
 }

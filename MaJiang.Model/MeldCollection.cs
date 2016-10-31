@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MaJiang.Model.Enums;
 
 namespace MaJiang.Model
 {
@@ -11,7 +12,6 @@ namespace MaJiang.Model
         private List<Meld> _melds;
         private List<Tile> _tilesLeft;
         private readonly Tile _draw;
-        private WinningTile _winningTile;
 
         public List<Meld> Melds
         {
@@ -47,6 +47,36 @@ namespace MaJiang.Model
         public bool Successful
         {
             get { return TilesLeft.Count == 0 && Melds.Any(); }
+        }
+
+        public bool IsPengPengHu
+        {
+            get
+            {
+                if (Successful)
+                {
+                    if (Melds.All(q => q.Type != MeldType.Sequence) && Melds.Count(q => q.Type == MeldType.Eye) == 1)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public bool IsQiXiaoDui
+        {
+            get
+            {
+                if (Successful)
+                {
+                    if (Melds.Count(q => q.Type == MeldType.Eye) == 7)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
         public MeldCollection(List<Meld> melds, List<Tile> tilesLeft, Tile draw = null)

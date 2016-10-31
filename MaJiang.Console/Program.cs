@@ -16,7 +16,7 @@ namespace MaJiang.Console
         //static void Main(string[] args)
         //{
         //    var game = new Game();
-            
+
         //    game.Shuffle();
 
         //    System.Console.WriteLine(game.Board.ToString());
@@ -48,30 +48,54 @@ namespace MaJiang.Console
             {
                 new Tile(Suit.Bamboo, 1),
                 new Tile(Suit.Bamboo, 1),
-                new Tile(Suit.Bamboo, 1),
                 new Tile(Suit.Dot, 2),
                 new Tile(Suit.Dot, 2),
                 new Tile(Suit.Dot, 2),
-                new Tile(Suit.Bamboo, 3),
+                new Tile(Suit.Dot, 2),
                 new Tile(Suit.Bamboo, 3),
                 new Tile(Suit.Bamboo, 3),
                 new Tile(Suit.Bamboo, 4),
                 new Tile(Suit.Bamboo, 4),
+                new Tile(Suit.Bamboo, 5),
                 new Tile(Suit.Bamboo, 5),
                 new Tile(Suit.Bamboo, 5),
             });
 
-            
+
             player.PlayerWin += PlayerOnPlayerWin;
             player.PlayerActionable += PlayerOnPlayerActionable;
             player.DiscardByOther(new Tile(Suit.Bamboo, 5));
 
             System.Console.WriteLine(player.ToString());
 
-            
+
 
             System.Console.ReadLine();
         }
+
+        //static void Main(string[] args)
+        //{
+        //    var list = new List<Tile>
+        //    {
+        //        new Tile(Suit.Bamboo, 1),
+        //        new Tile(Suit.Bamboo, 2),
+        //        new Tile(Suit.Bamboo, 3)
+        //    }.GetChildSets();
+
+        //    foreach (var item in list)
+        //    {
+        //        foreach (var tile in item)
+        //        {
+        //            System.Console.Write(tile);
+        //        }
+
+        //        System.Console.WriteLine();
+        //    }
+
+        //    System.Console.ReadLine();
+        //}
+
+
 
         private static void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
         {

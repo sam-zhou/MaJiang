@@ -38,7 +38,14 @@ namespace MaJiang.Core
             }
         }
 
-        
+        public TilesOnHand()
+        {
+            WinProcessorFactory = new WinProcessorFactory();
+        }
+
+        public WinProcessorFactory WinProcessorFactory { get; set; }
+
+
         private void Order()
         {
             Tiles = Tiles.OrderBy(q => q.Suit).ThenBy(q => q.Rank).ToList();
@@ -52,12 +59,16 @@ namespace MaJiang.Core
 
         public void DiscardByOther(Tile tile)
         {
-            var normalWinProcessor = new NormalWinProcessor(Tiles, new List<Tile> {tile});
-            var result = normalWinProcessor.Validate();
+            var winProcessorFactory = new WinProcessorFactory();
+            var result = new List<WinningTile>();
+            foreach (var winProcessor in winProcessorFactory.WinProcessors)
+            {
+                result.AddRange(winProcessor.Validate(Tiles, new List<Tile> { tile }));
+            }
 
             if (result.Any() && PlayerWin != null)
             {
-                PlayerWin(this, new PlayerWinEventArgs{WinningCollections = result});
+                PlayerWin(this, new PlayerWinEventArgs{WinningTiles = result});
             }
 
             var kongableMelds = MaJiangAlgorithm.GetKongableMelds(Tiles, tile);

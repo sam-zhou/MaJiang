@@ -60,5 +60,31 @@ namespace MaJiang.Extention
                 }
             }
         }
+
+        public static IList<IList<TSource>> GetChildSets<TSource>(this IList<TSource> a, IList<TSource> b = null, int i = 1)
+        {
+            var output = new List<IList<TSource>>();
+
+            if (b == null)
+            {
+                b = new List<TSource>();
+            }
+
+            if (i > a.Count) //到达集合尾部输出子集元素  
+            {
+                output.Add(b.ToList());
+            }
+            else
+            {
+                var x = a[i - 1];
+
+                b.Add(x);
+                output.AddRange(a.GetChildSets(b, i + 1));
+                b.Remove(x);
+                output.AddRange(a.GetChildSets(b, i + 1));
+            }
+
+            return output;
+        }
     }
 }

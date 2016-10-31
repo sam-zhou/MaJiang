@@ -14,6 +14,7 @@ namespace MaJiang.Model.Enums
         PengPengHu,
         QuanQiuRen,
         QiXiaoDui,
+        LongQiDui,
         HaiDi,
         TianHu,
         GangShangHua
