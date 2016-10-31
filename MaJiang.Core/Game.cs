@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using MaJiang.Model;
 
-namespace MaJiang.Model
+namespace MaJiang.Core
 {
     public class Game
     {
@@ -31,10 +28,10 @@ namespace MaJiang.Model
                 if (_players == null)
                 {
                     _players = new List<Player>();
-                    _players.Add(new Player("Player 1"));
-                    _players.Add(new Player("Player 2"));
-                    _players.Add(new Player("Player 3"));
-                    _players.Add(new Player("Player 4"));
+                    AddPlayer(new Player("Player 1"));
+                    AddPlayer(new Player("Player 2"));
+                    AddPlayer(new Player("Player 3"));
+                    AddPlayer(new Player("Player 4"));
                 }
                 return _players;
             }
@@ -43,8 +40,6 @@ namespace MaJiang.Model
         private void AddPlayer(Player player)
         {
             _players.Add(player);
-
-
         }
 
         private void DrawTilesForEachPlayer(int count)

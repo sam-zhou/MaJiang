@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MaJiang.Model
+namespace MaJiang.Model.EventArgs
 {
-    public enum PlayerAction
+    public class PlayerInitalWinEventArgs : System.EventArgs
     {
-        Win,
-        Chow,
-        Pong,
-        Kong,
     }
 }

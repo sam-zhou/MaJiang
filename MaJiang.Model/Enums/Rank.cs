@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MaJiang.Model
+namespace MaJiang.Model.Enums
 {
     public class Rank : IComparable
     {
         private readonly string _value;
 
-        public int Value { get; }
+        public int Value { get; private set; }
 
         public Rank(int value)
         {
@@ -64,7 +60,7 @@ namespace MaJiang.Model
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Value;
         }
 
         public override string ToString()
@@ -86,6 +82,13 @@ namespace MaJiang.Model
             {
                 throw new ArgumentException("Object is not a Rank");
             }
+        }
+
+
+
+        public static Rank Zero
+        {
+            get { return new Rank(0);}
         }
 
         public static Rank One

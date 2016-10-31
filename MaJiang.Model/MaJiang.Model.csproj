@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MaJiang.Model</RootNamespace>
     <AssemblyName>MaJiang.Model</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,28 +41,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\InitailWinType.cs" />
+    <Compile Include="Enums\WinType.cs" />
     <Compile Include="EventArgs\PlayerActionableEventArgs.cs" />
+    <Compile Include="EventArgs\PlayerInitalWinEventArgs.cs" />
+    <Compile Include="EventArgs\PlayerWinEventArgs.cs" />
     <Compile Include="EventArgs\TileRemovedEventArgs.cs" />
-    <Compile Include="Game.cs" />
     <Compile Include="Interfaces\ICountableStackCollection.cs" />
     <Compile Include="Interfaces\ICountableTileCollection.cs" />
     <Compile Include="Interfaces\IPlayerAction.cs" />
     <Compile Include="Interfaces\ISelectableCollection.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="PlayerAction.cs" />
+    <Compile Include="MeldCollection.cs" />
+    <Compile Include="Enums\PlayerAction.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Stack.cs" />
     <Compile Include="StacksCollection.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TilesCollection.cs" />
     <Compile Include="TileGroup.cs" />
-    <Compile Include="MeldType.cs" />
+    <Compile Include="Enums\MeldType.cs" />
     <Compile Include="Meld.cs" />
-    <Compile Include="TilesOnHand.cs" />
-    <Compile Include="Suit.cs" />
+    <Compile Include="Enums\Suit.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rank.cs" />
+    <Compile Include="Enums\Rank.cs" />
+    <Compile Include="WinningTile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MaJiang.Extention\MaJiang.Extention.csproj">

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MaJiang.Core;
 using MaJiang.Extention;
 using MaJiang.Model;
+using MaJiang.Model.Enums;
 using MaJiang.Model.EventArgs;
 
 namespace MaJiang.Console
@@ -47,20 +49,20 @@ namespace MaJiang.Console
                 new Tile(Suit.Bamboo, 1),
                 new Tile(Suit.Bamboo, 1),
                 new Tile(Suit.Bamboo, 1),
-                new Tile(Suit.Bamboo, 2),
-                new Tile(Suit.Bamboo, 2),
+                new Tile(Suit.Dot, 2),
+                new Tile(Suit.Dot, 2),
+                new Tile(Suit.Dot, 2),
                 new Tile(Suit.Bamboo, 3),
                 new Tile(Suit.Bamboo, 3),
                 new Tile(Suit.Bamboo, 3),
                 new Tile(Suit.Bamboo, 4),
                 new Tile(Suit.Bamboo, 4),
-                new Tile(Suit.Bamboo, 5),
                 new Tile(Suit.Bamboo, 5),
                 new Tile(Suit.Bamboo, 5),
             });
 
             
-
+            player.PlayerWin += PlayerOnPlayerWin;
             player.PlayerActionable += PlayerOnPlayerActionable;
             player.DiscardByOther(new Tile(Suit.Bamboo, 5));
 
@@ -71,9 +73,18 @@ namespace MaJiang.Console
             System.Console.ReadLine();
         }
 
+        private static void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
+        {
+            foreach (var winningTile in e.WinningTiles)
+            {
+                System.Console.WriteLine("WinningTile: " + winningTile);
+            }
+            
+        }
+
         private static void PlayerOnPlayerActionable(object sender, PlayerActionableEventArgs e)
         {
-            System.Console.WriteLine("Actionable: " + e.PlayerAction);
+            System.Console.WriteLine("Actionable: " + e.PlayerAction + " , Meld: " + e.Melds.GetString());
         }
     }
 }

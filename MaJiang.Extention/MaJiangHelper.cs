@@ -34,7 +34,7 @@ namespace MaJiang.Extention
             return GetRandomDice() + GetRandomDice();
         }
 
-        public static string GetString<T>(this List<T> list)
+        public static string GetString<T>(this IEnumerable<T> list)
         {
             var output = string.Empty;
             foreach (var item in list)
@@ -46,6 +46,19 @@ namespace MaJiang.Extention
                 output += item.ToString();
             }
             return output;
+        }
+
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>
+            (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            var seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
     }
 }

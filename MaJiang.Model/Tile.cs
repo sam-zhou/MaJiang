@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MaJiang.Model.Enums;
 
 namespace MaJiang.Model
 {
@@ -33,7 +34,7 @@ namespace MaJiang.Model
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Suit.GetHashCode()*10 + Rank.GetHashCode();
         }
 
         public override string ToString()

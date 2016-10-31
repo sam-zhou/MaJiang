@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MaJiang.Model
+namespace MaJiang.Model.Enums
 {
-    public enum MeldType
+    public enum InitailWinType
     {
-        Eye,
-        Triplet,
-        Sequence,
-        Kong
+        QueYiSe,
+        LiuLiuShun,
+        DaSiXi
     }
 }

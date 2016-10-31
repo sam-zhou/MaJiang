@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MaJiang.Model
+namespace MaJiang.Model.Enums
 {
     public class Suit : IComparable
     {
-        public string Name { get; }
+        public string Name { get; private set; }
 
         public Suit(string name)
         {
@@ -51,7 +47,20 @@ namespace MaJiang.Model
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            if (Name == "饼")
+            {
+                return 1;
+            }
+            if (Name == "条")
+            {
+                return 2;
+            }
+            if (Name == "万")
+            {
+                return 3;
+            }
+
+            return 0;
         }
 
         public static Suit Dot

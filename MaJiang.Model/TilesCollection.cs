@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MaJiang.Extention;
+using MaJiang.Model.Enums;
 using MaJiang.Model.EventArgs;
 using MaJiang.Model.Interfaces;
 
