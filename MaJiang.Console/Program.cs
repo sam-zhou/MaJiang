@@ -51,12 +51,75 @@ namespace MaJiang.Console
                
 
                 game.Reset();
+                input = "1";
 
-                //foreach (var player in game.Players)
-                //{
-                //    System.Console.WriteLine(player.ToString());
-                //}
-                input = System.Console.ReadLine();
+
+                var count = 0;
+                while (input != string.Empty)
+                {
+                    foreach (var player in game.Players)
+                    {
+                        System.Console.WriteLine(player.ToString());
+                    }
+
+                    System.Console.WriteLine("{0}输入出牌：", game.Players[count].Name);
+                    input = System.Console.ReadLine();
+
+                    int rank;
+                    Suit suit = Suit.Bamboo;
+                    if (input.ToLower()[0] == 'b')
+                    {
+                        suit = Suit.Bamboo;
+                    }
+                    else if (input.ToLower()[0] == 'c')
+                    {
+                        suit = Suit.Character;
+                    }
+                    else if (input.ToLower()[0] == 'd')
+                    {
+                        suit = Suit.Dot;
+                    }
+
+                    switch (input[1])
+                    {
+                        case '1':
+                            rank = 1;
+                            break;
+                        case '2':
+                            rank = 2;
+                            break;
+                        case '3':
+                            rank = 3;
+                            break;
+                        case '4':
+                            rank = 4;
+                            break;
+                        case '5':
+                            rank = 5;
+                            break;
+                        case '6':
+                            rank = 6;
+                            break;
+                        case '7':
+                            rank = 7;
+                            break;
+                        case '8':
+                            rank = 8;
+                            break;
+                        case '9':
+                            rank = 9;
+                            break;
+                        default:
+                            rank = 1;
+                            break;
+                    }
+
+                    game.Players[0].Discard(new Tile(suit, rank));
+
+
+                    count ++;
+                    count = count%4;
+                }
             }
 
 

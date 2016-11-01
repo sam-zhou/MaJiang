@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using MaJiang.Extention;
@@ -11,6 +12,8 @@ namespace MaJiang.Core
     public class Game
     {
         private Board _board;
+
+        private List<AvailablePlayerAction> _availablePlayerActions;
 
         private List<Player> _players; 
 
@@ -33,13 +36,28 @@ namespace MaJiang.Core
                 if (_players == null)
                 {
                     _players = new List<Player>();
-                    AddPlayer(new Player("Sam"));
-                    AddPlayer(new Player("Micha"));
-                    AddPlayer(new Player("JJ"));
-                    AddPlayer(new Player("JiaWei"));
+                    AddPlayer(new Player("Sam", PlayerDirection.East));
+                    AddPlayer(new Player("Micha", PlayerDirection.North));
+                    AddPlayer(new Player("JJ", PlayerDirection.West));
+                    AddPlayer(new Player("JiaWei", PlayerDirection.South));
                 }
                 return _players;
             }
+        }
+
+        
+
+        private List<AvailablePlayerAction> AvailablePlayerActions
+        {
+            get
+            {
+                if (_availablePlayerActions == null)
+                {
+                    _availablePlayerActions = new List<AvailablePlayerAction>();
+                }
+                return _availablePlayerActions;
+            }
+            set { _availablePlayerActions = value; }
         }
 
         private void AddPlayer(Player player)
@@ -48,9 +66,26 @@ namespace MaJiang.Core
             player.PlayerWin += PlayerOnPlayerWin;
             player.PlayerActionable += PlayerOnPlayerActionable;
             player.PlayerInitalWin += PlayerOnPlayerInitalWin;
+            player.PlayerDiscard += PlayerOnPlayerDiscard;
         }
 
-        private static void PlayerOnPlayerInitalWin(object sender, PlayerInitialWinEventArgs e)
+        private void PlayerOnPlayerDiscard(object sender, PlayerDiscardEventArgs e)
+        {
+            var player = sender as Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            AvailablePlayerActions = null;
+
+            foreach (var otherPlayer in Players.Where(q => q.Id != player.Id))
+            {
+                otherPlayer.DiscardByOther(e.Tile, otherPlayer.PlayerDirection == player.PlayerDirection.GetNextDirection());
+            }
+        }
+
+        private void PlayerOnPlayerInitalWin(object sender, PlayerInitialWinEventArgs e)
         {
             var palyer = sender as Player;
             if (palyer == null)
@@ -62,35 +97,35 @@ namespace MaJiang.Core
             {
                 foreach (var meld in e.Melds)
                 {
-                    System.Console.WriteLine(palyer.Name + " 大四喜: " + meld.Tiles.First());
+                    Console.WriteLine(palyer.Name + " 大四喜: " + meld.Tiles.First());
                 }
 
             }
             else if (e.Type == InitialWinType.LiuLiuShun)
             {
-                System.Console.Write(palyer.Name + " 六六顺: ");
+                Console.Write(palyer.Name + " 六六顺: ");
                 foreach (var meld in e.Melds)
                 {
-                    System.Console.Write(meld.Tiles.First());
+                    Console.Write(meld.Tiles.First());
                 }
-                System.Console.WriteLine();
+                Console.WriteLine();
             }
             else if (e.Type == InitialWinType.QueYiSe)
             {
-                System.Console.Write(palyer.Name + " 缺一色: ");
+                Console.Write(palyer.Name + " 缺一色: ");
                 foreach (var suit in e.LackSuits)
                 {
-                    System.Console.Write(suit.GetAttribute<DescriptionAttribute>().Description);
+                    Console.Write(suit.GetAttribute<DescriptionAttribute>().Description);
                 }
-                System.Console.WriteLine();
+                Console.WriteLine();
             }
             else if (e.Type == InitialWinType.BanBanHu)
             {
-                System.Console.Write(palyer.Name + " 板板胡");
+                Console.Write(palyer.Name + " 板板胡");
             }
         }
 
-        private static void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
+        private void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
         {
             var palyer = sender as Player;
             if (palyer == null)
@@ -100,20 +135,28 @@ namespace MaJiang.Core
 
             foreach (var winningTile in e.WinningTiles)
             {
-                System.Console.WriteLine(palyer.Name + " 可以胡: " + winningTile);
+                Console.WriteLine(palyer.Name + " 可以胡: " + winningTile);
             }
 
         }
 
-        private static void PlayerOnPlayerActionable(object sender, PlayerActionableEventArgs e)
+        private void PlayerOnPlayerActionable(object sender, PlayerActionableEventArgs e)
         {
-            var palyer = sender as Player;
-            if (palyer == null)
+            var player = sender as Player;
+            if (player == null)
             {
                 return;
             }
 
-            System.Console.WriteLine(palyer.Name + " 可以 " + e.PlayerAction.GetAttribute<DescriptionAttribute>().Description + " , 选择为: " + e.Melds.GetString());
+            var availablePlayerAction = new AvailablePlayerAction();
+            availablePlayerAction.ActionOnTile = e.ActionOnTile;
+            availablePlayerAction.Direction = player.PlayerDirection;
+            availablePlayerAction.PlayerAction = e.PlayerAction;
+            availablePlayerAction.Melds = e.Melds;
+
+            AvailablePlayerActions.Add(availablePlayerAction);
+
+            Console.WriteLine(player.Name + " 可以 " + e.PlayerAction.GetAttribute<DescriptionAttribute>().Description + " , 选择为: " + e.Melds.GetString());
         }
 
         private void IntialiseTilesOnHand()
@@ -151,7 +194,7 @@ namespace MaJiang.Core
 
             for (int i = 0; i < 4; i++)
             {
-                Players[i].TilesOnHand.InitialDraw(list[i]);
+                Players[i].InitialDraw(list[i]);
             }
         }
 

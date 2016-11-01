@@ -153,16 +153,12 @@ namespace MaJiang.Core.WinProcessors
                 {
                     
 
-                    newMeldCollection.CreateMeld(new Meld
-                    {
-                        Tiles = new List<Tile>
+                    newMeldCollection.CreateMeld(new Meld(new List<Tile>
                         {
                             tile,
                             tile,
                             tile
-                        },
-                        Type = MeldType.Triplet
-                    });
+                        }, MeldType.Triplet));
 
                     
                 }
@@ -215,16 +211,12 @@ namespace MaJiang.Core.WinProcessors
                         var newMeldCollection = new MeldCollection(meldCollection.Melds.ToList(),
                             meldCollection.TilesLeft.ToList(), meldCollection.Draw);
 
-                        newMeldCollection.CreateMeld(new Meld
-                        {
-                            Tiles = new List<Tile>
+                        newMeldCollection.CreateMeld(new Meld(new List<Tile>
                             {
                                 leftTile,
                                 midTile,
                                 rightTile
-                            },
-                            Type = MeldType.Sequence
-                        });
+                            }, MeldType.Sequence));
 
                         output.Add(newMeldCollection);
                     }
@@ -273,17 +265,13 @@ namespace MaJiang.Core.WinProcessors
             var tilePlusTwo = tiles.FirstOrDefault(q => q.Rank == orderedTiles[0].Rank + 2);
             if (tilePlusOne != null && tilePlusTwo != null)
             {
-                var meld = new Meld
+                var meld = new Meld(new List<Tile>
                 {
-                    Tiles = new List<Tile>
-                        {
-                            orderedTiles[0],
-                            tilePlusOne,
-                            tilePlusTwo
+                    orderedTiles[0],
+                    tilePlusOne,
+                    tilePlusTwo
 
-                        },
-                    Type = MeldType.Sequence
-                };
+                }, MeldType.Sequence);
                 output.Add(meld);
                 tiles.RemoveAt(0);
                 tiles.Remove(tilePlusOne);
@@ -304,14 +292,10 @@ namespace MaJiang.Core.WinProcessors
             {
                 var newMeldCollection = new MeldCollection(meldCollection.Melds.ToList(), meldCollection.TilesLeft.ToList(), meldCollection.Draw);
 
-                newMeldCollection.CreateMeld(new Meld
-                {
-                    Tiles = new List<Tile>
+                newMeldCollection.CreateMeld(new Meld(new List<Tile>
                         {
                             tile, tile
-                        },
-                    Type = MeldType.Eye
-                });
+                        }, MeldType.Eye));
 
                 output.Add(newMeldCollection);
             }

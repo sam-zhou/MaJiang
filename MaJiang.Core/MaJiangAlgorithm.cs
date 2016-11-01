@@ -23,22 +23,13 @@ namespace MaJiang.Core
 
                 if (count == 4)
                 {
-                    var meld = new Meld
-                    {
-                        Type = MeldType.Kong,
-                        Tiles = new List<Tile>
+                    var meld = new Meld(new List<Tile>
                         {
                             item,
                             item,
                             item,
                             item
-                        }
-                    };
-
-                    if (lastDraw.Equals(item))
-                    {
-                        meld.LastDraw = item;
-                    }
+                        }, MeldType.Kong, lastDraw.Equals(item)? item: null);
 
                     output.Add(meld);
                 }
@@ -54,17 +45,12 @@ namespace MaJiang.Core
 
             if (count == 2)
             {
-                var meld = new Meld
-                {
-                    Type = MeldType.Triplet,
-                    Tiles = new List<Tile>
+                var meld = new Meld(new List<Tile>
                     {
                         lastDraw,
                         lastDraw,
                         lastDraw
-                    },
-                    LastDraw = lastDraw
-                };
+                    }, MeldType.Triplet, lastDraw);
 
 
                 output.Add(meld);
@@ -83,14 +69,12 @@ namespace MaJiang.Core
 
             foreach (var tile in tilesWithTripletOccurance)
             {
-                output.Add(new Meld
+                output.Add(new Meld(new List<Tile>
                 {
-                    Tiles = new List<Tile>
-                    {
-                        tile, tile, tile
-                    },
-                    Type = MeldType.Triplet
-                });
+                    tile,
+                    tile,
+                    tile
+                }, MeldType.Triplet));
             }
 
             return output;
@@ -105,14 +89,10 @@ namespace MaJiang.Core
 
             foreach (var tile in tilesWithKongOccurance)
             {
-                output.Add(new Meld
-                {
-                    Tiles = new List<Tile>
+                output.Add(new Meld(new List<Tile>
                     {
                         tile, tile, tile, tile
-                    },
-                    Type = MeldType.Kong
-                });
+                    }, MeldType.Kong));
             }
 
             return output;
@@ -159,50 +139,35 @@ namespace MaJiang.Core
             if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 1) &&
                 tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 2))
             {
-                output.Add(new Meld
+                output.Add(new Meld(new List<Tile>
                 {
-                    Type = MeldType.Sequence,
-                    Tiles = new List<Tile>
-                    {
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 2),
-                        lastDraw,
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 1)
-                    },
-                    LastDraw = lastDraw
-                });
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank - 2),
+                    lastDraw,
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank - 1)
+                }, MeldType.Sequence, lastDraw));
             }
 
             if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 1) &&
                 tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 1))
             {
-                output.Add(new Meld
+                output.Add(new Meld(new List<Tile>
                 {
-                    Type = MeldType.Sequence,
-                    Tiles = new List<Tile>
-                    {
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 1),
-                        lastDraw,
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 1)
-                    },
-                    LastDraw = lastDraw
-                });
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank - 1),
+                    lastDraw,
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank + 1)
+                }, MeldType.Sequence, lastDraw));
             }
 
 
             if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 1) &&
                 tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 2))
             {
-                output.Add(new Meld
+                output.Add(new Meld(new List<Tile>
                 {
-                    Type = MeldType.Sequence,
-                    Tiles = new List<Tile>
-                    {
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 1),
-                        lastDraw,
-                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 2)
-                    },
-                    LastDraw = lastDraw
-                });
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank + 1),
+                    lastDraw,
+                    new Tile(lastDraw.Suit, (int) lastDraw.Rank + 2)
+                }, MeldType.Sequence, lastDraw));
             }
 
             return output;

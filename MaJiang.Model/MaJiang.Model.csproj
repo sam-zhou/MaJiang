@@ -41,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvailablePlayerAction.cs" />
     <Compile Include="EnumAttributes\IsJiangAttribute.cs" />
     <Compile Include="Enums\InitialWinType.cs" />
+    <Compile Include="Enums\PlayerDirection.cs" />
     <Compile Include="Enums\WinType.cs" />
     <Compile Include="EventArgs\PlayerActionableEventArgs.cs" />
+    <Compile Include="EventArgs\PlayerDiscardEventArgs.cs" />
     <Compile Include="EventArgs\PlayerInitialWinEventArgs.cs" />
     <Compile Include="EventArgs\PlayerWinEventArgs.cs" />
     <Compile Include="EventArgs\TileRemovedEventArgs.cs" />

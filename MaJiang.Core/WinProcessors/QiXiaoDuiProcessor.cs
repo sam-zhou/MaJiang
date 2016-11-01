@@ -38,15 +38,11 @@ namespace MaJiang.Core.WinProcessors
                     for (int i = 0; i < 7; i++)
                     {
                         var tile = meldCollection.TilesLeft[0];
-                        meldCollection.CreateMeld(new Meld
-                        {
-                            Tiles = new List<Tile>
+                        meldCollection.CreateMeld(new Meld(new List<Tile>
                             {
                                 tile,
                                 tile
-                            },
-                            Type = MeldType.Eye
-                        });
+                            }, MeldType.Eye));
                     }
                     output.Add(new WinningTile(meldCollection, tilesWithKongOccurance == 0 ? Type : WinType.LongQiDui, tilesWithKongOccurance));
                 }

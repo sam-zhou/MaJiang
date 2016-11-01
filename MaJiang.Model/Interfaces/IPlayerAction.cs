@@ -19,13 +19,15 @@ namespace MaJiang.Model.Interfaces
 
         void Discard(Tile tile);
 
-        void DiscardByOther(Tile tile);
+        void DiscardByOther(Tile tile, bool chowable = false);
 
         event EventHandler<PlayerActionableEventArgs> PlayerActionable;
 
         event EventHandler<PlayerWinEventArgs> PlayerWin;
 
         event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
+
+        event EventHandler<PlayerDiscardEventArgs> PlayerDiscard;
 
     }
 }

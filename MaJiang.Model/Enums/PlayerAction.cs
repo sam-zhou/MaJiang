@@ -12,5 +12,8 @@ namespace MaJiang.Model.Enums
 
         [Description("杠")]
         Kong,
+
+        [Description("胡")]
+        Win,
     }
 }

@@ -20,7 +20,7 @@ namespace MaJiang.Model
                 }
                 return _tiles;
             }
-            set { _tiles = value; }
+            protected set { _tiles = value; }
         }
 
         public int Count

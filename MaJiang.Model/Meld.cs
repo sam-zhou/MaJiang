@@ -13,9 +13,9 @@ namespace MaJiang.Model
     {
         public MeldType Type { get; set; }
 
-        public bool IsExposed { get; set; }
+        public bool IsExposed { get; private set; }
 
-        public Tile LastDraw { get; set; }
+        public Tile LastDraw { get; private set; }
 
         public bool IsJiang
         {
@@ -42,6 +42,14 @@ namespace MaJiang.Model
                 }
                 return 3;
             }
+        }
+
+        public Meld(List<Tile> tiles, MeldType type, Tile lastDraw = null, bool isExposed = false)
+        {
+            Tiles = tiles;
+            Type = type;
+            LastDraw = lastDraw;
+            IsExposed = isExposed;
         }
 
     }
