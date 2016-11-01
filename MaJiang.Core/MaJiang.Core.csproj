@@ -45,7 +45,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TilesOnHand.cs" />
     <Compile Include="WinProcessors\IWinProcessor.cs" />
-    <Compile Include="WinProcessors\LongQiDuiProcessor.cs" />
     <Compile Include="WinProcessors\QiXiaoDuiProcessor.cs" />
     <Compile Include="WinProcessors\PengPengHuProcessor.cs" />
     <Compile Include="WinProcessors\NormalWinProcessor.cs" />

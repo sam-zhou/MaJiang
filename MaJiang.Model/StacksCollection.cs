@@ -130,10 +130,10 @@ namespace MaJiang.Model
             var output = new List<Tile>();
 
 
-            var dice1 = MaJiangHelper.GetRandomDice();
+            var dice1 = RandomHelper.GetRandomDice();
             Console.WriteLine(dice1);
 
-            var dice2 = MaJiangHelper.GetRandomDice();
+            var dice2 = RandomHelper.GetRandomDice();
             Console.WriteLine(dice2);
             var dice = dice1 + dice2;
 
@@ -152,7 +152,7 @@ namespace MaJiang.Model
 
                     while (StackCount < dice)
                     {
-                        dice = MaJiangHelper.GetRandomDice();
+                        dice = RandomHelper.GetRandomDice();
                     }
                 }
 

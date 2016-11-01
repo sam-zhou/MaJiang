@@ -10,8 +10,6 @@ namespace MaJiang.Core.WinProcessors
 
         IEnumerable<Tile> Draws { get; set; }
 
-
-
         IEnumerable<Tile> TilesOnHand { get; set; }
 
         List<WinningTile> Validate(IEnumerable<Tile> tilesOnHand, IEnumerable<Tile> draws);

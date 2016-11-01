@@ -25,7 +25,7 @@ namespace MaJiang.Model.Interfaces
 
         event EventHandler<PlayerWinEventArgs> PlayerWin;
 
-        event EventHandler<PlayerInitalWinEventArgs> PlayerInitalWin;
+        event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
 
     }
 }

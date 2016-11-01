@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MaJiang.Extention
 {
-    public static class MaJiangHelper
+    public static class ListHelper
     {
         private static readonly Random Random = new Random();
 
@@ -23,16 +23,6 @@ namespace MaJiang.Extention
             }
         }
 
-        public static int GetRandomDice()
-        {
-            var rInt = new Random().Next(1, 6); //for ints
-            return rInt;
-        }
-
-        public static int GetRandomTwoDices()
-        {
-            return GetRandomDice() + GetRandomDice();
-        }
 
         public static string GetString<T>(this IEnumerable<T> list)
         {
@@ -70,7 +60,7 @@ namespace MaJiang.Extention
                 b = new List<TSource>();
             }
 
-            if (i > a.Count) //到达集合尾部输出子集元素  
+            if (i > a.Count) 
             {
                 output.Add(b.ToList());
             }

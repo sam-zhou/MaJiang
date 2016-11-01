@@ -19,7 +19,7 @@ namespace MaJiang.Core
 
             foreach (var item in list.Distinct())
             {
-                var count = list.Count(q => q.GetHashCode() == item.GetHashCode());
+                var count = list.Count(q => q.Equals(item));
 
                 if (count == 4)
                 {
@@ -50,7 +50,7 @@ namespace MaJiang.Core
         public static List<Meld> GetPongableMelds(IEnumerable<Tile> tiles, Tile lastDraw)
         {
             var output = new List<Meld>();
-            var count = tiles.Count(q => q.GetHashCode() == lastDraw.GetHashCode());
+            var count = tiles.Count(q => q.Equals(lastDraw));
 
             if (count == 2)
             {
@@ -74,58 +74,132 @@ namespace MaJiang.Core
             return output;
         }
 
+        public static List<Meld> GetTriplets(IList<Tile> tiles)
+        {
+            var tilesWithTripletOccurance = tiles.Distinct().Where(
+                        q => tiles.Count(p => p.Equals(q)) >= 3);
+
+            var output = new List<Meld>();
+
+            foreach (var tile in tilesWithTripletOccurance)
+            {
+                output.Add(new Meld
+                {
+                    Tiles = new List<Tile>
+                    {
+                        tile, tile, tile
+                    },
+                    Type = MeldType.Triplet
+                });
+            }
+
+            return output;
+        }
+
+        public static List<Meld> GetKongs(IList<Tile> tiles)
+        {
+            var tilesWithKongOccurance = tiles.Distinct().Where(
+                        q => tiles.Count(p => p.Equals(q)) == 4);
+
+            var output = new List<Meld>();
+
+            foreach (var tile in tilesWithKongOccurance)
+            {
+                output.Add(new Meld
+                {
+                    Tiles = new List<Tile>
+                    {
+                        tile, tile, tile, tile
+                    },
+                    Type = MeldType.Kong
+                });
+            }
+
+            return output;
+        }
+
+        public static bool IsBanBanHu(IList<Tile> tiles)
+        {
+            return tiles.All(q => q.Rank != Rank.Two && q.Rank != Rank.Five && q.Rank != Rank.Eight);
+        } 
+
+        public static List<Suit> GetLackSuits(IList<Tile> tiles)
+        {
+            var suits = tiles.Select(q => q.Suit).Distinct().ToList();
+            var output = new List<Suit>();
+
+            if (suits.Count < 3)
+            {
+                if (!suits.Contains(Suit.Bamboo))
+                {
+                    output.Add(Suit.Bamboo);
+                }
+                if (!suits.Contains(Suit.Character))
+                {
+                    output.Add(Suit.Character);
+                }
+
+                if (!suits.Contains(Suit.Dot))
+                {
+                    output.Add(Suit.Dot);
+                }
+            }
+
+            return output;
+        }
+
         public static List<Meld> GetChowableMelds(IEnumerable<Tile> tiles, Tile lastDraw)
         {
             var output = new List<Meld>();
 
-            var tilesWithSameSuit = tiles.Where(q => q.Suit.Equals(lastDraw.Suit)).ToList();
+            var tilesWithSameSuit = tiles.Where(q => q.Suit == lastDraw.Suit).ToList();
 
-            
 
-            if (tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value - 1) &&
-                tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value - 2))
+
+            if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 1) &&
+                tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 2))
             {
                 output.Add(new Meld
                 {
                     Type = MeldType.Sequence,
                     Tiles = new List<Tile>
                     {
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value - 2),
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 2),
                         lastDraw,
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value - 1)
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 1)
                     },
                     LastDraw = lastDraw
                 });
             }
 
-            if (tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value + 1) &&
-                tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value - 1))
+            if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 1) &&
+                tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank - 1))
             {
                 output.Add(new Meld
                 {
                     Type = MeldType.Sequence,
                     Tiles = new List<Tile>
                     {
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value - 1),
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank - 1),
                         lastDraw,
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value + 1)
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 1)
                     },
                     LastDraw = lastDraw
                 });
             }
 
 
-            if (tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value + 1) &&
-                tilesWithSameSuit.Any(q => q.Rank.Value == lastDraw.Rank.Value + 2))
+            if (tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 1) &&
+                tilesWithSameSuit.Any(q => (int)q.Rank == (int)lastDraw.Rank + 2))
             {
                 output.Add(new Meld
                 {
                     Type = MeldType.Sequence,
                     Tiles = new List<Tile>
                     {
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value + 1),
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 1),
                         lastDraw,
-                        new Tile(lastDraw.Suit, lastDraw.Rank.Value + 2)
+                        new Tile(lastDraw.Suit, (int)lastDraw.Rank + 2)
                     },
                     LastDraw = lastDraw
                 });

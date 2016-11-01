@@ -22,21 +22,19 @@ namespace MaJiang.Core.WinProcessors
             foreach (var possibleSet in PossibleSets)
             {
                 var ordered = possibleSet.TilesLeft.OrderBy(q => q.Suit).ThenBy(q => q.Rank).ToList();
-
                 var meldCollection = new MeldCollection(null, ordered, possibleSet.Draw);
 
-                var success = true;
+                var tilesWithEyeOccurance =
+                    meldCollection.TilesLeft.Distinct().Count(
+                        q => meldCollection.TilesLeft.Count(p => p.Equals(q)) == 2);
 
-                for (int i = 0; i < 14; i+= 2)
-                {
-                    if (meldCollection.TilesLeft[i].GetHashCode() != meldCollection.TilesLeft[i + 1].GetHashCode())
-                    {
-                        success = false;
-                    }
-                }
+                var tilesWithKongOccurance =
+                    meldCollection.TilesLeft.Distinct().Count(
+                        q => meldCollection.TilesLeft.Count(p => p.Equals(q)) == 4);
 
-                if (success)
+                if (tilesWithEyeOccurance + tilesWithKongOccurance*2 == 7)
                 {
+
                     for (int i = 0; i < 7; i++)
                     {
                         var tile = meldCollection.TilesLeft[0];
@@ -50,8 +48,9 @@ namespace MaJiang.Core.WinProcessors
                             Type = MeldType.Eye
                         });
                     }
-                    output.Add(new WinningTile(meldCollection, WinType.QiXiaoDui));
+                    output.Add(new WinningTile(meldCollection, tilesWithKongOccurance == 0 ? Type : WinType.LongQiDui, tilesWithKongOccurance));
                 }
+                
             }
 
             return output;

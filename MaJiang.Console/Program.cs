@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace MaJiang.Console
 
         //    System.Console.WriteLine(game.Board.ToString());
 
-        //    game.Initialise();
+        //    game.Reset();
 
         //    var tile = game.Board.GetNextTile();
 
@@ -42,36 +43,27 @@ namespace MaJiang.Console
 
         static void Main(string[] args)
         {
-            var player = new Player("Sam");
+            var input = string.Empty;
+            var game = new Game();
 
-            player.TilesOnHand.InitialDraw(new List<Tile>
+            while (input == string.Empty)
             {
-                new Tile(Suit.Bamboo, 1),
-                new Tile(Suit.Bamboo, 1),
-                new Tile(Suit.Dot, 2),
-                new Tile(Suit.Dot, 2),
-                new Tile(Suit.Dot, 2),
-                new Tile(Suit.Dot, 2),
-                new Tile(Suit.Bamboo, 3),
-                new Tile(Suit.Bamboo, 3),
-                new Tile(Suit.Bamboo, 4),
-                new Tile(Suit.Bamboo, 4),
-                new Tile(Suit.Bamboo, 5),
-                new Tile(Suit.Bamboo, 5),
-                new Tile(Suit.Bamboo, 5),
-            });
+               
+
+                game.Reset();
+
+                //foreach (var player in game.Players)
+                //{
+                //    System.Console.WriteLine(player.ToString());
+                //}
+                input = System.Console.ReadLine();
+            }
 
 
-            player.PlayerWin += PlayerOnPlayerWin;
-            player.PlayerActionable += PlayerOnPlayerActionable;
-            player.DiscardByOther(new Tile(Suit.Bamboo, 5));
-
-            System.Console.WriteLine(player.ToString());
-
-
-
-            System.Console.ReadLine();
+            
         }
+
+
 
         //static void Main(string[] args)
         //{
@@ -94,21 +86,5 @@ namespace MaJiang.Console
 
         //    System.Console.ReadLine();
         //}
-
-
-
-        private static void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
-        {
-            foreach (var winningTile in e.WinningTiles)
-            {
-                System.Console.WriteLine("WinningTile: " + winningTile);
-            }
-            
-        }
-
-        private static void PlayerOnPlayerActionable(object sender, PlayerActionableEventArgs e)
-        {
-            System.Console.WriteLine("Actionable: " + e.PlayerAction + " , Meld: " + e.Melds.GetString());
-        }
     }
 }

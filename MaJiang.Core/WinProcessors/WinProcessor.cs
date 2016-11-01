@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using MaJiang.Extention;
 using MaJiang.Model;
@@ -64,9 +65,10 @@ namespace MaJiang.Core.WinProcessors
         {
             TilesOnHand = tilesOnHand;
             Draws = draws;
-            var time = DateTime.Now.Ticks;
+            var stopwatch = Stopwatch.StartNew();
             var result = Process();
-            Console.WriteLine("Time Spent on {0} calculation was: {1}", Type, DateTime.Now.Ticks-time);
+            stopwatch.Stop();
+            Console.WriteLine("Time Spent on {0} calculation was: {1}", Type, stopwatch.ElapsedMilliseconds);
             return result;
         }
         
@@ -132,9 +134,8 @@ namespace MaJiang.Core.WinProcessors
             if (selectedTiles == null)
             {
                 var tilesWithTripletOccurance =
-                meldCollection.TilesLeft.Where(
-                    q => meldCollection.TilesLeft.Count(p => p.GetHashCode() == q.GetHashCode()) >= 3)
-                    .Distinct()
+                meldCollection.TilesLeft.Distinct().Where(
+                    q => meldCollection.TilesLeft.Count(p => p.Equals(q)) >= 3)
                     .ToList();
 
                 var exceptionChildList = tilesWithTripletOccurance.GetChildSets();
@@ -174,20 +175,130 @@ namespace MaJiang.Core.WinProcessors
 
         protected IEnumerable<MeldCollection> GetSequanceMeldCollections(MeldCollection meldCollection)
         {
-            var output = new List<MeldCollection>
+            var output = new List<MeldCollection>();
+
+            if (meldCollection.TilesLeft.Count == 0)
             {
-                meldCollection
-            };
+                return output;
+            }
+
+            if (meldCollection.TilesLeft.Count%3 != 0)
+            {
+                throw new Exception("Cannot process sequance search");
+            }
+
+            var suit = meldCollection.TilesLeft.First().Suit;
+
+            if (meldCollection.TilesLeft.Count(q => q.Suit == suit) != meldCollection.TilesLeft.Count)
+            {
+                throw new Exception("Unmatched suit found");
+            }
+
+            if (meldCollection.TilesLeft.Count == 3)
+            {
+                var totalRank = meldCollection.TilesLeft.Sum(q => (int) q.Rank);
+                if (totalRank%3 != 0)
+                {
+                    return output;
+                }
+                else
+                {
+                    var midTileRank = totalRank/3;
+                    var midTile = meldCollection.TilesLeft.FirstOrDefault(q => q.Rank == (Rank) midTileRank);
+
+                    var leftTile = meldCollection.TilesLeft.FirstOrDefault(q => q.Rank == (Rank) midTileRank - 1);
+
+                    var rightTile = meldCollection.TilesLeft.FirstOrDefault(q => q.Rank == (Rank) midTileRank + 1);
+
+                    if (midTile != null && leftTile != null && rightTile != null)
+                    {
+                        var newMeldCollection = new MeldCollection(meldCollection.Melds.ToList(),
+                            meldCollection.TilesLeft.ToList(), meldCollection.Draw);
+
+                        newMeldCollection.CreateMeld(new Meld
+                        {
+                            Tiles = new List<Tile>
+                            {
+                                leftTile,
+                                midTile,
+                                rightTile
+                            },
+                            Type = MeldType.Sequence
+                        });
+
+                        output.Add(newMeldCollection);
+                    }
+
+                }
+            }
+            else
+            {
+                var tilesLeft = meldCollection.TilesLeft.ToList();
+                var melds = meldCollection.Melds.ToList();
+                melds.AddRange(GetSequance(tilesLeft));
+
+                if (tilesLeft.Count == 0)
+                {
+                    output.Add(new MeldCollection(melds, null, meldCollection.Draw));
+                }
+
+            }
 
 
             return output;
         }
 
+        private IEnumerable<Meld> GetSequance(IList<Tile> tiles)
+        {
+            var output = new List<Meld>();
+            if (tiles.Count < 3)
+            {
+                return output;
+            }
+
+            if (tiles.Sum(q => (int) q.Rank)%3 != 0)
+            {
+                return output;
+            }
+
+            var orderedTiles = tiles.Distinct().OrderBy(q => q.Rank).ToList();
+
+            if (orderedTiles.Count < 3)
+            {
+                return output;
+            }
+
+
+            var tilePlusOne = tiles.FirstOrDefault(q => q.Rank == orderedTiles[0].Rank + 1);
+            var tilePlusTwo = tiles.FirstOrDefault(q => q.Rank == orderedTiles[0].Rank + 2);
+            if (tilePlusOne != null && tilePlusTwo != null)
+            {
+                var meld = new Meld
+                {
+                    Tiles = new List<Tile>
+                        {
+                            orderedTiles[0],
+                            tilePlusOne,
+                            tilePlusTwo
+
+                        },
+                    Type = MeldType.Sequence
+                };
+                output.Add(meld);
+                tiles.RemoveAt(0);
+                tiles.Remove(tilePlusOne);
+                tiles.Remove(tilePlusTwo);
+                output.AddRange(GetSequance(tiles));
+            }
+
+            return output;
+        } 
+
         protected IEnumerable<MeldCollection> GetEyeMeldCollections(MeldCollection meldCollection)
         {
             var output = new List<MeldCollection>();
 
-            var tilesWithDoubleOccurance = meldCollection.TilesLeft.Where(q => meldCollection.TilesLeft.Count(p => p.Rank.Equals(q.Rank) && p.Suit.Equals(q.Suit)) >= 2).Distinct();
+            var tilesWithDoubleOccurance = meldCollection.TilesLeft.Where(q => meldCollection.TilesLeft.Count(p => p.Rank == q.Rank && p.Suit == q.Suit) >= 2).Distinct();
 
             foreach (var tile in tilesWithDoubleOccurance)
             {

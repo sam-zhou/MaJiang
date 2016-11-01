@@ -31,10 +31,10 @@ namespace MaJiang.Core.WinProcessors
                 {
                     var meldCollections = new List<MeldCollection>();
 
-                    var floor = ordered.Count(q => q.Suit.Equals(suit))%3;
+                    var floor = ordered.Count(q => q.Suit == suit)%3;
                     if (floor == 2 || floor == 0)
                     {
-                        var items = GetMeldCollections(new MeldCollection(null, ordered.Where(q => q.Suit.Equals(suit)).ToList(), possibleSet.Draw)).Where(q => q.Successful);
+                        var items = GetMeldCollections(new MeldCollection(null, ordered.Where(q => q.Suit == suit).ToList(), possibleSet.Draw)).Where(q => q.Successful);
 
                         foreach (var meldCollection in items)
                         {
@@ -57,7 +57,11 @@ namespace MaJiang.Core.WinProcessors
 
                 foreach (var meldCollection in result)
                 {
-                    output.Add(new WinningTile(meldCollection, Type));
+                    if (meldCollection.Melds.Sum(q => q.TilesCount) == 14)
+                    {
+                        output.Add(new WinningTile(meldCollection, Type));
+                    }
+                    
                 }
                 
             }

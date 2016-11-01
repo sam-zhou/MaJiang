@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MaJiang.Model;
 
 namespace MaJiang.Core.WinProcessors
 {
@@ -10,7 +11,7 @@ namespace MaJiang.Core.WinProcessors
     {
         private List<IWinProcessor> _winProcessors;
 
-        public List<IWinProcessor> WinProcessors
+        protected List<IWinProcessor> WinProcessors
         {
             get
             {
@@ -37,6 +38,17 @@ namespace MaJiang.Core.WinProcessors
                 var processor = (IWinProcessor)Activator.CreateInstance(processorType);
                 WinProcessors.Add(processor);
             }
+        }
+
+        public List<WinningTile> Validate(IList<Tile> tilesOnHand, IList<Tile> draws)
+        {
+            var output = new List<WinningTile>();
+            foreach (var winProcessor in WinProcessors)
+            {
+                output.AddRange(winProcessor.Validate(tilesOnHand, draws));
+            }
+
+            return output;
         }
     }
 }

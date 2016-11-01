@@ -13,7 +13,7 @@ namespace MaJiang.Core
 
         public event EventHandler<PlayerActionableEventArgs> PlayerActionable;
         public event EventHandler<PlayerWinEventArgs> PlayerWin;
-        public event EventHandler<PlayerInitalWinEventArgs> PlayerInitalWin;
+        public event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
 
         public string Name { get; set; }
 
@@ -23,17 +23,14 @@ namespace MaJiang.Core
         {
             Id = new Random().Next(1000000000);
             Name = name;
-            TilesOnHand = new TilesOnHand();
-            TilesOnHand.PlayerActionable += TilesOnHandOnPlayerActionable;
-            TilesOnHand.PlayerWin += TilesOnHandOnPlayerWin;
-            TilesOnHand.PlayerInitalWin += TilesOnHandOnPlayerInitalWin;
+            Reset();
         }
 
-        private void TilesOnHandOnPlayerInitalWin(object sender, PlayerInitalWinEventArgs e)
+        private void TilesOnHandOnPlayerInitalWin(object sender, PlayerInitialWinEventArgs e)
         {
             if (PlayerInitalWin != null)
             {
-                PlayerInitalWin(sender, e);
+                PlayerInitalWin(this, e);
             }
         }
 
@@ -41,7 +38,7 @@ namespace MaJiang.Core
         {
             if (PlayerWin != null)
             {
-                PlayerWin(sender, e);
+                PlayerWin(this, e);
             }
         }
 
@@ -49,7 +46,7 @@ namespace MaJiang.Core
         {
             if (PlayerActionable != null)
             {
-                PlayerActionable(sender, e);
+                PlayerActionable(this, e);
             }
 
         }
@@ -63,6 +60,9 @@ namespace MaJiang.Core
         public void Reset()
         {
             TilesOnHand = new TilesOnHand();
+            TilesOnHand.PlayerActionable += TilesOnHandOnPlayerActionable;
+            TilesOnHand.PlayerWin += TilesOnHandOnPlayerWin;
+            TilesOnHand.PlayerInitalWin += TilesOnHandOnPlayerInitalWin;
         }
 
         public void Draw(Tile tile)

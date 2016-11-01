@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace MaJiang.Model.Enums
 {
-    public enum InitailWinType
+    public enum InitialWinType
     {
         QueYiSe,
         LiuLiuShun,
-        DaSiXi
+        DaSiXi,
+        BanBanHu
     }
 }

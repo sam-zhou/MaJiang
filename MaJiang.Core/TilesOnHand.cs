@@ -16,7 +16,7 @@ namespace MaJiang.Core
 
         public event EventHandler<PlayerActionableEventArgs> PlayerActionable;
         public event EventHandler<PlayerWinEventArgs> PlayerWin;
-        public event EventHandler<PlayerInitalWinEventArgs> PlayerInitalWin;
+        public event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
 
         public bool IsWinable { get; set; }
 
@@ -54,17 +54,45 @@ namespace MaJiang.Core
         public void InitialDraw(List<Tile> tiles)
         {
             Tiles.AddRange(tiles);
+
+
+            if (PlayerInitalWin != null)
+            {
+
+                var kongMelds = MaJiangAlgorithm.GetKongs(tiles);
+
+                if (kongMelds.Any())
+                {
+                    PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.DaSiXi, kongMelds));
+                }
+
+                var triplets = MaJiangAlgorithm.GetTriplets(tiles);
+                if (triplets.Count >= 2)
+                {
+                    PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.LiuLiuShun, triplets));
+                }
+
+                var lackSuits = MaJiangAlgorithm.GetLackSuits(tiles);
+                if (lackSuits.Count > 0)
+                {
+                    PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.QueYiSe, lackSuits));
+                }
+
+                if (MaJiangAlgorithm.IsBanBanHu(tiles))
+                {
+                    PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.BanBanHu));
+                }
+            }
+
+            
+
             Order();
         }
 
         public void DiscardByOther(Tile tile)
         {
             var winProcessorFactory = new WinProcessorFactory();
-            var result = new List<WinningTile>();
-            foreach (var winProcessor in winProcessorFactory.WinProcessors)
-            {
-                result.AddRange(winProcessor.Validate(Tiles, new List<Tile> { tile }));
-            }
+            var result = winProcessorFactory.Validate(Tiles, new List<Tile> {tile});
 
             if (result.Any() && PlayerWin != null)
             {

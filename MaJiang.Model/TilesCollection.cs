@@ -19,16 +19,7 @@ namespace MaJiang.Model
 
         public TilesCollection()
         {
-            Tiles = new List<Tile>();
-            for (int i = 1; i <= 9; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    Tiles.Add(new Tile(Suit.Dot, i));
-                    Tiles.Add(new Tile(Suit.Bamboo, i));
-                    Tiles.Add(new Tile(Suit.Character, i));
-                }
-            }
+            
         }
 
         private void RemoveAt(int index)
@@ -45,6 +36,29 @@ namespace MaJiang.Model
 
         public void Shuffle()
         {
+            Tiles = new List<Tile>();
+            for (int i = 1; i <= 9; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Tiles.Add(Tile.GetTile(Suit.Bamboo, i));
+                    
+                }
+
+                for (int j = 0; j < 4; j++)
+                {
+                    
+                    Tiles.Add(Tile.GetTile(Suit.Character, i));
+                    
+                }
+
+                for (int j = 0; j < 4; j++)
+                {
+                    
+                    Tiles.Add(Tile.GetTile(Suit.Dot, i));
+                }
+            }
+
             Tiles.Shuffle();
             if (TileShuffled != null)
             {

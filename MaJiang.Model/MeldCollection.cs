@@ -29,6 +29,8 @@ namespace MaJiang.Model
         {
             get { return _draw; }
         }
+ 
+        
 
         public List<Tile> TilesLeft
         {
@@ -86,12 +88,23 @@ namespace MaJiang.Model
             _draw = draw;
         }
 
+        public List<Tile> GetAllTiles()
+        {
+            var output = TilesLeft.ToList();
+
+            foreach (var meld in Melds)
+            {
+                output.AddRange(meld.Tiles);
+            }
+            return output;
+        } 
+
         public void CreateMeld(Meld meld)
         {
             Melds.Add(meld);
             foreach (var tile in meld.Tiles)
             {
-                var found = TilesLeft.FirstOrDefault(q => q.Rank.Equals(tile.Rank) && q.Suit.Equals(tile.Suit));
+                var found = TilesLeft.FirstOrDefault(q => q.Rank == tile.Rank && q.Suit == tile.Suit);
                 if (found != null)
                 {
                     TilesLeft.Remove(found);
