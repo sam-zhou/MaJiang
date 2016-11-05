@@ -15,7 +15,14 @@ namespace MaJiang.Core
 
         private List<AvailablePlayerAction> _availablePlayerActions;
 
-        private List<Player> _players; 
+        private List<Player> _players;
+
+        public event EventHandler GameStarted;
+
+        public event EventHandler<PlayerActionableEventArgs> PlayerActionable;
+        public event EventHandler<PlayerWinEventArgs> PlayerWin;
+        public event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
+        public event EventHandler<PlayerDiscardEventArgs> PlayerDiscard;
 
         public Board Board
         {
@@ -29,6 +36,8 @@ namespace MaJiang.Core
             }
         }
 
+        public bool IsBusy { get; private set; }
+
         public List<Player> Players
         {
             get
@@ -36,16 +45,11 @@ namespace MaJiang.Core
                 if (_players == null)
                 {
                     _players = new List<Player>();
-                    AddPlayer(new Player("Sam", PlayerDirection.East));
-                    AddPlayer(new Player("Micha", PlayerDirection.North));
-                    AddPlayer(new Player("JJ", PlayerDirection.West));
-                    AddPlayer(new Player("JiaWei", PlayerDirection.South));
+                    
                 }
                 return _players;
             }
         }
-
-        
 
         private List<AvailablePlayerAction> AvailablePlayerActions
         {
@@ -60,13 +64,41 @@ namespace MaJiang.Core
             set { _availablePlayerActions = value; }
         }
 
-        private void AddPlayer(Player player)
+        public void Join(Player player)
         {
-            _players.Add(player);
-            player.PlayerWin += PlayerOnPlayerWin;
-            player.PlayerActionable += PlayerOnPlayerActionable;
-            player.PlayerInitalWin += PlayerOnPlayerInitalWin;
-            player.PlayerDiscard += PlayerOnPlayerDiscard;
+            if (!IsBusy)
+            {
+                if (Players.Count < 4)
+                {
+
+                    foreach (PlayerDirection direction in Enum.GetValues(typeof(PlayerDirection)))
+                    {
+                        if (Players.All(q => q.PlayerDirection != direction))
+                        {
+                            player.SetDirection(direction);
+                            Players.Add(player);
+                            player.PlayerWin += PlayerOnPlayerWin;
+                            player.PlayerActionable += PlayerOnPlayerActionable;
+                            player.PlayerInitalWin += PlayerOnPlayerInitalWin;
+                            player.PlayerDiscard += PlayerOnPlayerDiscard;
+
+                            break;
+                        }
+                    }
+                }
+
+
+                if (Players.Count == 4)
+                {
+                    IsBusy = true;
+                    Reset();
+
+                    if (GameStarted != null)
+                    {
+                        GameStarted(this, null);
+                    }
+                }
+            }
         }
 
         private void PlayerOnPlayerDiscard(object sender, PlayerDiscardEventArgs e)
@@ -93,35 +125,9 @@ namespace MaJiang.Core
                 return;
             }
 
-            if (e.Type == InitialWinType.DaSiXi)
+            if (PlayerInitalWin != null)
             {
-                foreach (var meld in e.Melds)
-                {
-                    Console.WriteLine(palyer.Name + " 大四喜: " + meld.Tiles.First());
-                }
-
-            }
-            else if (e.Type == InitialWinType.LiuLiuShun)
-            {
-                Console.Write(palyer.Name + " 六六顺: ");
-                foreach (var meld in e.Melds)
-                {
-                    Console.Write(meld.Tiles.First());
-                }
-                Console.WriteLine();
-            }
-            else if (e.Type == InitialWinType.QueYiSe)
-            {
-                Console.Write(palyer.Name + " 缺一色: ");
-                foreach (var suit in e.LackSuits)
-                {
-                    Console.Write(suit.GetAttribute<DescriptionAttribute>().Description);
-                }
-                Console.WriteLine();
-            }
-            else if (e.Type == InitialWinType.BanBanHu)
-            {
-                Console.Write(palyer.Name + " 板板胡");
+                PlayerInitalWin(sender, e);
             }
         }
 

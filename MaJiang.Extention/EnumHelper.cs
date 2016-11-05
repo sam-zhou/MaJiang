@@ -9,7 +9,7 @@ namespace MaJiang.Extention
     public static class EnumHelper
     {
         public static TAttribute GetAttribute<TAttribute>(this Enum value)
-        where TAttribute : Attribute
+            where TAttribute : Attribute
         {
             var type = value.GetType();
             var name = Enum.GetName(type, value);

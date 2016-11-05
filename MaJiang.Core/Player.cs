@@ -22,7 +22,7 @@ namespace MaJiang.Core
 
         private WinProcessorFactory WinProcessorFactory { get; set; }
 
-        public long Id { get; private set; }
+        public string Id { get; private set; }
 
         public PlayerDirection PlayerDirection { get; private set; }
 
@@ -41,13 +41,16 @@ namespace MaJiang.Core
             private set { _melds = value; }
         }
 
-        public Player(string name, PlayerDirection playerDirection)
+        public Player(string name, string id)
         {
-            Id = new Random().Next(1000000000);
+            Id = id;
             Name = name;
-            PlayerDirection = playerDirection;
-
             WinProcessorFactory = new WinProcessorFactory();
+        }
+
+        public void SetDirection(PlayerDirection direction)
+        {
+            PlayerDirection = direction;
         }
 
         private void Order()
