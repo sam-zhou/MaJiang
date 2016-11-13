@@ -1,6 +1,6 @@
 using System;
 
-namespace Example
+namespace MaJiang.Client.WebSocket
 {
   internal class NotificationMessage
   {

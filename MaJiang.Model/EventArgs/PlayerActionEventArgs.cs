@@ -7,13 +7,13 @@ using MaJiang.Model.Enums;
 
 namespace MaJiang.Model.EventArgs
 {
-    public class PlayerActionableEventArgs: System.EventArgs
+    public class PlayerActionEventArgs: System.EventArgs
     {
         private IEnumerable<Meld> _melds; 
 
-        public PlayerAction PlayerAction { get; set; }
+        public PlayerActions PlayerAction { get; private set; }
 
-        public Tile ActionOnTile { get; set; }
+        public Tile ActionOnTile { get; private set; }
 
         public IEnumerable<Meld> Melds
         {
@@ -25,13 +25,20 @@ namespace MaJiang.Model.EventArgs
                 }
                 return _melds;
             }
-            set { _melds = value; }
+            private set { _melds = value; }
         }
 
-        public PlayerActionableEventArgs(PlayerAction playerAction, IEnumerable<Meld> melds, Tile actionOnTile = null)
+
+        public PlayerActionEventArgs(PlayerActions playerAction, IEnumerable<Meld> melds, Tile actionOnTile = null)
         {
             PlayerAction = playerAction;
             Melds = melds;
+            ActionOnTile = actionOnTile;
+        }
+
+        public PlayerActionEventArgs(PlayerActions playerAction, Tile actionOnTile)
+        {
+            PlayerAction = playerAction;
             ActionOnTile = actionOnTile;
         }
     }

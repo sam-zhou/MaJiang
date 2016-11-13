@@ -44,10 +44,9 @@
     <Compile Include="AvailablePlayerAction.cs" />
     <Compile Include="EnumAttributes\IsJiangAttribute.cs" />
     <Compile Include="Enums\InitialWinType.cs" />
-    <Compile Include="Enums\PlayerDirection.cs" />
+    <Compile Include="Enums\PlayerPositions.cs" />
     <Compile Include="Enums\WinType.cs" />
-    <Compile Include="EventArgs\PlayerActionableEventArgs.cs" />
-    <Compile Include="EventArgs\PlayerDiscardEventArgs.cs" />
+    <Compile Include="EventArgs\PlayerActionEventArgs.cs" />
     <Compile Include="EventArgs\PlayerInitialWinEventArgs.cs" />
     <Compile Include="EventArgs\PlayerWinEventArgs.cs" />
     <Compile Include="EventArgs\TileRemovedEventArgs.cs" />
@@ -56,7 +55,7 @@
     <Compile Include="Interfaces\IPlayerAction.cs" />
     <Compile Include="Interfaces\ISelectableCollection.cs" />
     <Compile Include="MeldCollection.cs" />
-    <Compile Include="Enums\PlayerAction.cs" />
+    <Compile Include="Enums\PlayerActions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Stack.cs" />
     <Compile Include="StacksCollection.cs" />

@@ -13,10 +13,10 @@ namespace MaJiang.Core
     {
         private List<Meld> _melds;
 
-        public event EventHandler<PlayerActionableEventArgs> PlayerActionable;
-        public event EventHandler<PlayerWinEventArgs> PlayerWin;
+        public event EventHandler<PlayerActionEventArgs> PlayerActionable;
+        public event EventHandler<PlayerActionEventArgs> PlayerAction;
+        public event EventHandler<PlayerWinEventArgs> PlayerWinable;
         public event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
-        public event EventHandler<PlayerDiscardEventArgs> PlayerDiscard;
 
         public string Name { get; private set; }
 
@@ -24,7 +24,7 @@ namespace MaJiang.Core
 
         public string Id { get; private set; }
 
-        public PlayerDirection PlayerDirection { get; private set; }
+        public PlayerPositions PlayerPosition { get; private set; }
 
         public bool IsDealer { get; set; }
 
@@ -48,9 +48,9 @@ namespace MaJiang.Core
             WinProcessorFactory = new WinProcessorFactory();
         }
 
-        public void SetDirection(PlayerDirection direction)
+        public void SetDirection(PlayerPositions positions)
         {
-            PlayerDirection = direction;
+            PlayerPosition = positions;
         }
 
         private void Order()
@@ -74,29 +74,29 @@ namespace MaJiang.Core
             Tiles.AddRange(tiles);
 
 
-            if (PlayerInitalWin != null)
+            if (PlayerInitalWin != null && Tiles.Count == (IsDealer? 14: 13))
             {
 
-                var kongMelds = MaJiangAlgorithm.GetKongs(tiles);
+                var kongMelds = MaJiangAlgorithm.GetKongs(Tiles);
 
                 if (kongMelds.Any())
                 {
                     PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.DaSiXi, kongMelds));
                 }
 
-                var triplets = MaJiangAlgorithm.GetTriplets(tiles);
+                var triplets = MaJiangAlgorithm.GetTriplets(Tiles);
                 if (triplets.Count >= 2)
                 {
                     PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.LiuLiuShun, triplets));
                 }
 
-                var lackSuits = MaJiangAlgorithm.GetLackSuits(tiles);
+                var lackSuits = MaJiangAlgorithm.GetLackSuits(Tiles);
                 if (lackSuits.Count > 0)
                 {
                     PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.QueYiSe, lackSuits));
                 }
 
-                if (MaJiangAlgorithm.IsBanBanHu(tiles))
+                if (MaJiangAlgorithm.IsBanBanHu(Tiles))
                 {
                     PlayerInitalWin(this, new PlayerInitialWinEventArgs(InitialWinType.BanBanHu));
                 }
@@ -110,16 +110,37 @@ namespace MaJiang.Core
         public void Draw(Tile tile)
         {
             Tiles.Add(tile);
+            
         }
 
         public void Pong(Tile tile)
         {
             Tiles.Add(tile);
+            if (PlayerAction != null)
+            {
+                PlayerAction(this, new PlayerActionEventArgs(PlayerActions.Pong, new List<Meld>
+                {
+                    new Meld(new List<Tile>
+                    {
+                        tile, tile, tile
+                    }, MeldType.Triplet, tile)
+                }));
+            }
         }
 
         public void Kong(Tile tile)
         {
             Tiles.Add(tile);
+            if (PlayerAction != null)
+            {
+                PlayerAction(this, new PlayerActionEventArgs(PlayerActions.Pong, new List<Meld>
+                {
+                    new Meld(new List<Tile>
+                    {
+                        tile, tile, tile, tile
+                    }, MeldType.Kong, tile)
+                }));
+            }
         }
 
         public void Chow(Tile tile)
@@ -133,12 +154,9 @@ namespace MaJiang.Core
 
             Order();
 
-            if (PlayerDiscard != null)
+            if (PlayerAction != null)
             {
-                PlayerDiscard(this, new PlayerDiscardEventArgs
-                {
-                    Tile = tile
-                });
+                PlayerAction(this, new PlayerActionEventArgs(PlayerActions.Discard, tile));
             }
         }
 
@@ -147,22 +165,22 @@ namespace MaJiang.Core
             var winProcessorFactory = new WinProcessorFactory();
             var result = winProcessorFactory.Validate(Tiles, new List<Tile> { tile });
 
-            if (result.Any() && PlayerWin != null)
+            if (result.Any() && PlayerWinable != null)
             {
-                PlayerWin(this, new PlayerWinEventArgs { WinningTiles = result });
+                PlayerWinable(this, new PlayerWinEventArgs { WinningTiles = result });
             }
 
             var kongableMelds = MaJiangAlgorithm.GetKongableMelds(Tiles, tile);
 
             if (kongableMelds.Any())
             {
-                FireEvent(PlayerAction.Kong, kongableMelds, tile);
+                FireEvent(PlayerActions.Kong, kongableMelds, tile);
             }
 
             var pongableMelds = MaJiangAlgorithm.GetPongableMelds(Tiles, tile);
             if (pongableMelds.Any())
             {
-                FireEvent(PlayerAction.Pong, pongableMelds, tile);
+                FireEvent(PlayerActions.Pong, pongableMelds, tile);
             }
 
             if (chowable)
@@ -170,39 +188,17 @@ namespace MaJiang.Core
                 var chowableMelds = MaJiangAlgorithm.GetChowableMelds(Tiles, tile);
                 if (chowableMelds.Any())
                 {
-                    FireEvent(PlayerAction.Chow, chowableMelds, tile);
+                    FireEvent(PlayerActions.Chow, chowableMelds, tile);
                 }
             }
-
         }
 
-        private void FireEvent(PlayerAction action, IEnumerable<Meld> melds, Tile actionOnTile)
+        private void FireEvent(PlayerActions actions, IEnumerable<Meld> melds, Tile actionOnTile)
         {
             if (PlayerActionable != null)
             {
-                PlayerActionable(this, new PlayerActionableEventArgs(action, melds, actionOnTile));
-
-                Console.WriteLine("Press Y To Confirm：");
-                var input = Console.ReadLine();
-
-                if (input.ToLower() == "y")
-                {
-                    switch (action)
-                    {
-                        case PlayerAction.Chow:
-                            Chow(actionOnTile);
-                            break;
-                        case PlayerAction.Pong:
-                            Pong(actionOnTile);
-                            break;
-                        case PlayerAction.Kong:
-                            Kong(actionOnTile);
-                            break;
-                    }
-                }
+                PlayerActionable(this, new PlayerActionEventArgs(actions, melds, actionOnTile));
             }
-
-
         }
     }
 }

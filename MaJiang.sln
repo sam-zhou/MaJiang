@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaJiang.Model", "MaJiang.Model\MaJiang.Model.csproj", "{8B744477-5519-4ECC-8188-55366C724E08}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocket", "WebSocket", "{D1400B69-B46A-44B9-BD8A-3C88FCB62A45}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaJiang.WebSocket.Core", "WebSocket\MaJiang.WebSocket.Core\MaJiang.WebSocket.Core.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaJiang.Client.WebSocket", "WebSocket\MaJiang.Client.WebSocket\MaJiang.Client.WebSocket.csproj", "{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,14 @@ Global
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug_Ubuntu|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Debug_Ubuntu|Any CPU.Build.0 = Debug_Ubuntu|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Release_Ubuntu|Any CPU.ActiveCfg = Release_Ubuntu|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,5 +90,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{031D006B-DBD3-4F53-BDF3-9B272304352A} = {D1400B69-B46A-44B9-BD8A-3C88FCB62A45}
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE} = {D1400B69-B46A-44B9-BD8A-3C88FCB62A45}
+		{52805AEC-EFB1-4F42-BB8E-3ED4E692C568} = {D1400B69-B46A-44B9-BD8A-3C88FCB62A45}
 	EndGlobalSection
 EndGlobal

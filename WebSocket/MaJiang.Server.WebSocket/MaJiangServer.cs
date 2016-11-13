@@ -65,7 +65,7 @@ namespace MaJiang.Server.WebSocket
 
         private void HttpServerOnConnect(object sender, HttpRequestEventArgs e)
         {
-            HttpServer.Log.Debug(e.Request.UserAgent);
+            //HttpServer.Log.Debug(e.Request.UserAgent);
         }
 
         public MaJiangServer()

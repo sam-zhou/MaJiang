@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using MaJiang.Extention;
 using MaJiang.Model;
 using MaJiang.Model.Enums;
@@ -17,12 +18,14 @@ namespace MaJiang.Core
 
         private List<Player> _players;
 
+        private PlayerPositions _currentPlayerPosition;
+
         public event EventHandler GameStarted;
 
-        public event EventHandler<PlayerActionableEventArgs> PlayerActionable;
-        public event EventHandler<PlayerWinEventArgs> PlayerWin;
+        public event EventHandler<PlayerActionEventArgs> PlayerAction;
+        public event EventHandler<PlayerActionEventArgs> PlayerActionable;
+        public event EventHandler<PlayerWinEventArgs> PlayerWinable;
         public event EventHandler<PlayerInitialWinEventArgs> PlayerInitalWin;
-        public event EventHandler<PlayerDiscardEventArgs> PlayerDiscard;
 
         public Board Board
         {
@@ -68,20 +71,28 @@ namespace MaJiang.Core
         {
             if (!IsBusy)
             {
+                
+
                 if (Players.Count < 4)
                 {
 
-                    foreach (PlayerDirection direction in Enum.GetValues(typeof(PlayerDirection)))
+                    foreach (PlayerPositions direction in Enum.GetValues(typeof(PlayerPositions)))
                     {
-                        if (Players.All(q => q.PlayerDirection != direction))
+                        if (Players.All(q => q.PlayerPosition != direction))
                         {
                             player.SetDirection(direction);
+
+                            if (Players.Count == 0)
+                            {
+                                player.IsDealer = true;
+                                _currentPlayerPosition = direction;
+                            }
+
                             Players.Add(player);
-                            player.PlayerWin += PlayerOnPlayerWin;
+                            player.PlayerWinable += PlayerOnPlayerWinable;
                             player.PlayerActionable += PlayerOnPlayerActionable;
                             player.PlayerInitalWin += PlayerOnPlayerInitalWin;
-                            player.PlayerDiscard += PlayerOnPlayerDiscard;
-
+                            player.PlayerAction += PlayerOnPlayerAction;
                             break;
                         }
                     }
@@ -101,7 +112,7 @@ namespace MaJiang.Core
             }
         }
 
-        private void PlayerOnPlayerDiscard(object sender, PlayerDiscardEventArgs e)
+        private void PlayerOnPlayerAction(object sender, PlayerActionEventArgs e)
         {
             var player = sender as Player;
             if (player == null)
@@ -109,11 +120,21 @@ namespace MaJiang.Core
                 return;
             }
 
+            
             AvailablePlayerActions = null;
 
-            foreach (var otherPlayer in Players.Where(q => q.Id != player.Id))
+            if (e.PlayerAction == PlayerActions.Discard)
             {
-                otherPlayer.DiscardByOther(e.Tile, otherPlayer.PlayerDirection == player.PlayerDirection.GetNextDirection());
+                foreach (var otherPlayer in Players.Where(q => q.Id != player.Id))
+                {
+                    otherPlayer.DiscardByOther(e.ActionOnTile, otherPlayer.PlayerPosition == player.PlayerPosition.GetNextPosition());
+                }
+            }
+            
+
+            if (PlayerAction != null)
+            {
+                PlayerAction(player, e);
             }
         }
 
@@ -131,7 +152,7 @@ namespace MaJiang.Core
             }
         }
 
-        private void PlayerOnPlayerWin(object sender, PlayerWinEventArgs e)
+        private void PlayerOnPlayerWinable(object sender, PlayerWinEventArgs e)
         {
             var palyer = sender as Player;
             if (palyer == null)
@@ -139,14 +160,13 @@ namespace MaJiang.Core
                 return;
             }
 
-            foreach (var winningTile in e.WinningTiles)
+            if (PlayerWinable != null)
             {
-                Console.WriteLine(palyer.Name + " 可以胡: " + winningTile);
+                PlayerWinable(sender, e);
             }
-
         }
 
-        private void PlayerOnPlayerActionable(object sender, PlayerActionableEventArgs e)
+        private void PlayerOnPlayerActionable(object sender, PlayerActionEventArgs e)
         {
             var player = sender as Player;
             if (player == null)
@@ -154,53 +174,61 @@ namespace MaJiang.Core
                 return;
             }
 
-            var availablePlayerAction = new AvailablePlayerAction();
-            availablePlayerAction.ActionOnTile = e.ActionOnTile;
-            availablePlayerAction.Direction = player.PlayerDirection;
-            availablePlayerAction.PlayerAction = e.PlayerAction;
-            availablePlayerAction.Melds = e.Melds;
+            var availablePlayerAction = new AvailablePlayerAction(e.PlayerAction, _currentPlayerPosition, player.PlayerPosition, e.ActionOnTile, e.Melds);
 
             AvailablePlayerActions.Add(availablePlayerAction);
 
-            Console.WriteLine(player.Name + " 可以 " + e.PlayerAction.GetAttribute<DescriptionAttribute>().Description + " , 选择为: " + e.Melds.GetString());
+            if (PlayerActionable != null)
+            {
+                PlayerActionable(sender, e);
+            }
+        }
+
+        private Player GetPlayer(PlayerPositions position)
+        {
+            return Players.FirstOrDefault(q => q.PlayerPosition == position);
+        }
+
+        private Player GetCurrentPlayer()
+        {
+            return Players.FirstOrDefault(q => q.PlayerPosition == _currentPlayerPosition);
         }
 
         private void IntialiseTilesOnHand()
         {
-            var list = new List<List<Tile>>();
 
-
-
-            for (int i = 0; i < 4; i++)
+            var dealer = GetCurrentPlayer();
+            if (dealer != null)
             {
-                list.Add(new List<Tile>());
+                for (var i = 0; i < 4; i++)
+                {
+                    var numberOfTiles = i == 3 ? 1 : 4;
+
+                    dealer.InitialDraw(Board.GetNextTiles(numberOfTiles));
+
+                    var position = dealer.PlayerPosition;
+                    for (int j = 0; j < 3; j++)
+                    {
+                        position = position.GetNextPosition();
+
+                        var player = GetPlayer(position);
+
+                        if (player != null)
+                        {
+                            player.InitialDraw(Board.GetNextTiles(numberOfTiles));
+                        }
+                        else
+                        {
+                            throw new Exception("Cannot find player on " + position);
+                        }
+                    }
+                }
+
+                dealer.InitialDraw(Board.GetNextTiles(1));
             }
-
-            for (int i = 0; i < 4; i++)
+            else
             {
-                list[i].AddRange(Board.GetNextTiles(4));
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                list[i].AddRange(Board.GetNextTiles(4));
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                list[i].AddRange(Board.GetNextTiles(4));
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                list[i].AddRange(Board.GetNextTiles(1));
-            }
-
-            list[0].AddRange(Board.GetNextTiles(1));
-
-            for (int i = 0; i < 4; i++)
-            {
-                Players[i].InitialDraw(list[i]);
+                throw new Exception("Cannot find dealer");
             }
         }
 

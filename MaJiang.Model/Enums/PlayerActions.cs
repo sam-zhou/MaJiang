@@ -2,18 +2,21 @@
 
 namespace MaJiang.Model.Enums
 {
-    public enum PlayerAction
+    public enum PlayerActions
     {
         [Description("吃")]
-        Chow,
+        Chow = 1,
 
         [Description("碰")]
-        Pong,
+        Pong = 2,
 
         [Description("杠")]
-        Kong,
+        Kong = 3,
 
         [Description("胡")]
-        Win,
+        Win = 4,
+
+        [Description("出牌")]
+        Discard = 0,
     }
 }

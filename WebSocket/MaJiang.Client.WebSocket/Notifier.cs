@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Example
+namespace MaJiang.Client.WebSocket
 {
   internal class Notifier : IDisposable
   {

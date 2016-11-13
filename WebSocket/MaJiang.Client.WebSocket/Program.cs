@@ -1,9 +1,8 @@
 using System;
 using System.Threading;
-using WebSocketSharp;
-using WebSocketSharp.Net;
+using MaJiang.WebSocket.Core;
 
-namespace Example
+namespace MaJiang.Client.WebSocket
 {
   public class Program
   {
@@ -19,7 +18,7 @@ namespace Example
       // you should create a new instance with a wss scheme WebSocket URL.
 
       using (var nf = new Notifier ())
-      using (var ws = new WebSocket("ws://localhost:4649/MaJiangGame?name=micha&room=12345125"))
+      using (var ws = new MaJiang.WebSocket.Core.WebSocket("ws://localhost:4649/MaJiangGame?room=12345125"))
       //using (var ws = new WebSocket ("wss://echo.websocket.org"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Echo"))
@@ -32,8 +31,7 @@ namespace Example
       {
         // Set the WebSocket events.
 
-        ws.OnOpen += (sender, e) => ws.Send ("Initial");
-
+        ws.OnOpen += WsOnOnOpen;
         ws.OnMessage += (sender, e) =>
             nf.Notify (
               new NotificationMessage {
@@ -62,7 +60,7 @@ namespace Example
             );
 #if DEBUG
         // To change the logging level.
-        ws.Log.Level = LogLevel.Trace;
+        //ws.Log.Level = LogLevel.Trace;
 
         // To change the wait time for the response to the Ping or Close.
         //ws.WaitTime = TimeSpan.FromSeconds (10);
@@ -124,5 +122,10 @@ namespace Example
         }
       }
     }
+
+      private static void WsOnOnOpen(object sender, EventArgs eventArgs)
+      {
+          
+      }
   }
 }

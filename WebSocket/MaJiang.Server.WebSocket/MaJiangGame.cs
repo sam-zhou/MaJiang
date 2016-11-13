@@ -63,7 +63,7 @@ namespace MaJiang.Server.WebSocket
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            if (e.Data == "Initial")
+            if (e.Data == "Pong")
             {
                 Sessions.Broadcast(String.Format("{0}: connected to room {1}", _name, _room));
             }
@@ -146,7 +146,8 @@ namespace MaJiang.Server.WebSocket
 
             _game.GameStarted += GameOnGameStarted;
             _game.PlayerInitalWin += GameOnPlayerInitalWin;
-
+            _game.PlayerActionable += GameOnPlayerActionable;
+            _game.PlayerAction += GameOnPlayerAction;
             _player = Games[_room].Players.FirstOrDefault(q => q.Id == ID);
 
             if (_player == null)
@@ -154,6 +155,39 @@ namespace MaJiang.Server.WebSocket
                 _player = new Player(_name, ID);
                 _game.Join(_player);
                 Sessions.SendTo(string.Format("Joining room {0}", _room), ID);
+            }
+        }
+
+        private void GameOnPlayerAction(object sender, PlayerActionEventArgs e)
+        {
+            var player = sender as Player;
+            if (player == null)
+            {
+                throw new Exception("Sender is not a valid player");
+            }
+            foreach (var meld in e.Melds)
+            {
+                Sessions.Broadcast(string.Format("{0} {1} on {2} - Melds: {3}", player.Name, e.PlayerAction, e.ActionOnTile, meld));
+            }
+
+            
+        }
+
+        private void GameOnPlayerActionable(object sender, PlayerActionEventArgs e)
+        {
+            var player = sender as Player;
+            if (player == null)
+            {
+                throw new Exception("Sender is not a valid player");
+            }
+
+            if (player.Id == ID)
+            {
+                foreach (var meld in e.Melds)
+                {
+                    Sessions.SendTo(string.Format("You can {0} on {1} Melds: {2}", e.PlayerAction, e.ActionOnTile, meld), ID);
+                }
+                
             }
         }
 
@@ -182,7 +216,7 @@ namespace MaJiang.Server.WebSocket
 
         private void GameOnGameStarted(object sender, EventArgs e)
         {
-            Sessions.Broadcast("Game started");
+            Sessions.SendTo("Game started", ID);
             Sessions.SendTo(_player.ToString(), ID);
         }
     }
